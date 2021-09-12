@@ -5,20 +5,18 @@ import {
   InjectBot,
   Message,
   On,
-  Sender,
   Start,
   Update,
 } from 'nestjs-telegraf';
 import { Telegraf } from 'telegraf';
-import { User } from 'telegraf/typings/core/types/typegram';
-import { TgContext } from './common/context.interface';
-import { TelegrafExceptionFilter } from './common/filters/telegraf-exception.filter';
-import { AdminGuard } from './common/guards/admin.guard';
-import { ReverseTextPipe } from './common/pipes/reverse-text.pipe';
+import { TgContext } from './context.interface';
+import { TelegrafExceptionFilter } from './filters/telegraf-exception.filter';
+import { AdminGuard } from './guards/admin.guard';
+import { ReverseTextPipe } from './pipes/reverse-text.pipe';
 
 @Update()
 @UseFilters(TelegrafExceptionFilter)
-export class AppUpdate {
+export class TBotUpdate {
   constructor(@InjectBot() private bot: Telegraf<TgContext>) {}
 
   @Start()
