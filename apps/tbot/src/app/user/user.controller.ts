@@ -7,7 +7,7 @@ import {
   Post,
 } from '@nestjs/common';
 import { CreateUserDto } from './dto/create-user.dto';
-import { UserModel } from './user.schema';
+import { UserModel } from './schema/user.schema';
 import { UserService } from './user.service';
 
 @Controller('/user')
@@ -17,6 +17,7 @@ export class UserController {
   @Post('/')
   async onCreate(@Body() dto: CreateUserDto): Promise<UserModel> {
     const item = await this.userService.create(dto);
+    console.log({ primaryDevice: item.preference.primaryDevice });
     return item;
   }
 
