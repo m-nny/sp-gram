@@ -8,8 +8,6 @@ const spotifyConfig = {
   redirectUri: process.env.SPOTIFY_REDIRECT_URI || 'nope',
 };
 
-console.log({ spotifyConfig });
-
 @Injectable()
 export class SpotifyService {
   private webApi = new SpotifyWebApi(spotifyConfig);
