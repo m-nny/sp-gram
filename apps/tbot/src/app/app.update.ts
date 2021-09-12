@@ -5,10 +5,12 @@ import {
   InjectBot,
   Message,
   On,
+  Sender,
   Start,
   Update,
 } from 'nestjs-telegraf';
 import { Telegraf } from 'telegraf';
+import { User } from 'telegraf/typings/core/types/typegram';
 import { TgContext } from './common/context.interface';
 import { TelegrafExceptionFilter } from './common/filters/telegraf-exception.filter';
 import { AdminGuard } from './common/guards/admin.guard';
@@ -34,6 +36,11 @@ export class AppUpdate {
   @UseGuards(AdminGuard)
   onAdminCommand(): string {
     return `Welcome admin`;
+  }
+
+  @Command('me')
+  onMe(ctx: TgContext) {
+    return JSON.stringify(ctx.from, null, 4);
   }
 
   @On('text')

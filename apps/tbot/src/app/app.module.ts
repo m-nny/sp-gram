@@ -5,7 +5,7 @@ import { AppUpdate } from './app.update';
 @Module({
   imports: [
     TelegrafModule.forRoot({
-      token: '890615029:AAElx3u5gLeA3bG8HflJ3KVdMVGOS8Nb1Pw',
+      token: process.env.TBOT_TOKEN,
     }),
   ],
   providers: [AppUpdate],
