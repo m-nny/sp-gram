@@ -6,9 +6,9 @@ export class CreateUserDto implements CreateUserInfo {
   readonly fullname: string;
 
   @IsNumber()
-  readonly tId: number;
+  readonly tgId: number;
 
   @IsOptional()
   @IsString()
-  readonly tUsername?: string;
+  readonly tgUsername?: string;
 }

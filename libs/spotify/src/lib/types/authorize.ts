@@ -1,23 +1,21 @@
 import _ from 'lodash';
 import { SpotifyWebApiConfig } from './config';
 
-export type SwagAuthorizeArgs = {
+export type AuthorizeArgs = {
   state?: string;
 } & Partial<SpotifyWebApiConfig>;
 
-export type SwagAuthorizeCallbackSuccessResult = {
+export type AuthorizeSuccessResult = {
   code: string;
   state: string;
 };
-export type SwagAuthorizeCallbackErrorResult = {
+export type AuthorizeErrorResult = {
   error: string;
   state: string;
 };
-export type SwagAuthorizeCallbackResult =
-  | SwagAuthorizeCallbackSuccessResult
-  | SwagAuthorizeCallbackErrorResult;
+export type AuthorizeResult = AuthorizeSuccessResult | AuthorizeErrorResult;
 
-export const isSwagAuthorizeCallbackSuccessResult = (
+export const isAuthorizeSuccessResult = (
   obj: any
-): obj is SwagAuthorizeCallbackSuccessResult =>
+): obj is AuthorizeSuccessResult =>
   _.isString(obj?.code) && _.isString(obj?.state);

@@ -2,7 +2,7 @@ import axios, { AxiosInstance, AxiosRequestConfig } from 'axios';
 import _ from 'lodash';
 import qs from 'query-string';
 import { accountsUrl, defaultAxiosConfig, webApiUrl } from './constants';
-import { SpotifyWebApiConfig, SwagAuthorizeArgs } from './types';
+import { SpotifyWebApiConfig, AuthorizeArgs } from './types';
 import { ExchangeCodeArgs, ExchangeCodeResult } from './types/exchange-tokens';
 import {
   GetClientInfoArgs,
@@ -28,7 +28,7 @@ export class SpotifyWebApi {
   public getAuthorizationUrl = ({
     state,
     ...config
-  }: SwagAuthorizeArgs): string => {
+  }: AuthorizeArgs): string => {
     config = _.merge(config, this.config);
     const query = {
       client_id: config.clientId,

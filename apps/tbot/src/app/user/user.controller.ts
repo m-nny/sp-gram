@@ -21,11 +21,11 @@ export class UserController {
     return item;
   }
 
-  @Get('/:tid')
-  async onFindByTId(@Param('tid') tId: number): Promise<UserModel> {
-    const item = await this.userService.findByTId(tId);
+  @Get('/:tgId')
+  async onFindByTId(@Param('tgId') tgId: number): Promise<UserModel> {
+    const item = await this.userService.findByTId({ tgId });
     if (!item) {
-      throw new NotFoundException(`no user with tId = ${tId} found`);
+      throw new NotFoundException(`no user with tId = ${tgId} found`);
     }
     return item;
   }

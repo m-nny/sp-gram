@@ -1,5 +1,5 @@
 import { Prop, Schema, SchemaFactory } from '@nestjs/mongoose';
-import mongoose, { Document } from 'mongoose';
+import { Document } from 'mongoose';
 import { UserAuth } from './user-auth.schema';
 import {
   defaultUserPreference,
@@ -12,20 +12,21 @@ export class UserModel {
   fullname: string;
 
   @Prop({ required: true, unique: true })
-  tId: number;
+  tgId: number;
 
   @Prop({ unique: true })
-  tUsername?: string;
+  tgUsername?: string;
 
-  @Prop({ type: mongoose.Schema.Types.Map })
-  auth?: UserAuth;
+  @Prop({})
+  auth?: UserAuth | null;
 
   @Prop({ required: true, default: defaultUserPreference })
   preference: UserPreference;
 }
+export type UserInfoKey = Pick<UserModel, 'tgId'>;
 
 export type UserDocument = UserModel & Document;
 export type CreateUserInfo = Omit<UserModel, 'auth' | 'preference'>;
-export type UpdateUserInfo = Partial<Omit<UserModel, 'tId'>>;
+export type UpdateUserInfo = Partial<Omit<UserModel, 'tgId'>>;
 
 export const UserSchema = SchemaFactory.createForClass(UserModel);

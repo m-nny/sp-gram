@@ -1,5 +1,8 @@
 import { Module } from '@nestjs/common';
 import { TelegrafModule } from 'nestjs-telegraf';
+import { SpotifyModule } from '../spotify/spotify.module';
+import { UserModule } from '../user/user.module';
+import { TbotService } from './tbot.service';
 import { TBotUpdate } from './tbot.update';
 
 @Module({
@@ -7,7 +10,9 @@ import { TBotUpdate } from './tbot.update';
     TelegrafModule.forRoot({
       token: process.env.TBOT_TOKEN,
     }),
+    UserModule,
+    SpotifyModule,
   ],
-  providers: [TBotUpdate],
+  providers: [TBotUpdate, TbotService],
 })
 export class TBotModule {}

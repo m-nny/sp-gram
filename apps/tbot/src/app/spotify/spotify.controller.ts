@@ -2,15 +2,13 @@ import {
   BadRequestException,
   Controller,
   Get,
+  InternalServerErrorException,
   Query,
   Redirect,
 } from '@nestjs/common';
 import _ from 'lodash';
 import { SpotifyService } from './spotify.service';
-import {
-  isSwagAuthorizeCallbackSuccessResult,
-  SwagAuthorizeCallbackResult,
-} from '@sp-gram/spotify';
+import { isAuthorizeSuccessResult, AuthorizeResult } from '@sp-gram/spotify';
 
 @Controller('/spotify')
 export class SpotifyController {
@@ -20,20 +18,17 @@ export class SpotifyController {
   @Get('/login')
   @Redirect()
   onLogin() {
-    const state = `m-nny`;
-    const url = this.spotifyService.getAuthorizationUrl({ state });
+    const state = `467620958`;
+    const { url } = this.spotifyService.getAuthorizationUrl({ state });
     return { url };
   }
 
   @Get('/callback')
-  async onCallback(@Query() callbackResult: SwagAuthorizeCallbackResult) {
-    console.log({ query: callbackResult });
-    if (!isSwagAuthorizeCallbackSuccessResult(callbackResult)) {
-      throw new BadRequestException(callbackResult, 'Could not authorize');
+  async onCallback(@Query() result: AuthorizeResult) {
+    if (!isAuthorizeSuccessResult(result)) {
+      throw new InternalServerErrorException('Could not authorize');
     }
-    const code = callbackResult.code;
-    const tokens = await this.spotifyService.exchangeCodeForTokens({ code });
-    this.accessToken = tokens.access_token;
+    const tokens = await this.spotifyService.exchangeCodeForTokens(result);
     return tokens;
   }
 
