@@ -2,12 +2,13 @@ import axios, { AxiosInstance, AxiosRequestConfig } from 'axios';
 import _ from 'lodash';
 import qs from 'query-string';
 import { accountsUrl, defaultAxiosConfig, webApiUrl } from './constants';
-import { SpotifyWebApiConfig, AuthorizeArgs } from './types';
+import { AuthorizeArgs, SpotifyWebApiConfig } from './types';
 import { ExchangeCodeArgs, ExchangeCodeResult } from './types/exchange-tokens';
 import {
   GetClientInfoArgs,
   GetClientInfoResult,
 } from './types/get-client-info';
+import { RefreshTokenArgs, RefreshTokenResult } from './types/refresh-tokens';
 import { toBase64 } from './utils';
 
 export class SpotifyWebApi {
@@ -25,11 +26,26 @@ export class SpotifyWebApi {
     );
   }
 
+  private getHeaders = (accessToken?: string) => {
+    if (accessToken) {
+      accessToken = `Bearer ` + accessToken;
+    } else {
+      accessToken =
+        `Basic ` +
+        toBase64(`${this.config.clientId}:${this.config.clientSecret}`);
+    }
+    return { Authorization: accessToken };
+  };
+
   public getAuthorizationUrl = ({
     state,
-    ...config
+    ...configOverride
   }: AuthorizeArgs): string => {
-    config = _.merge(config, this.config);
+    const config: SpotifyWebApiConfig = _.merge(
+      {},
+      this.config,
+      configOverride
+    );
     const query = {
       client_id: config.clientId,
       response_type: 'code',
@@ -42,18 +58,6 @@ export class SpotifyWebApi {
     console.log({ url, query });
     return qs.stringifyUrl({ url, query });
   };
-
-  private getHeaders = (accessToken?: string) => {
-    if (accessToken) {
-      accessToken = `Bearer ` + accessToken;
-    } else {
-      accessToken =
-        `Basic ` +
-        toBase64(`${this.config.clientId}:${this.config.clientSecret}`);
-    }
-    return { Authorization: accessToken };
-  };
-
   public exchangeCodeForTokens = ({
     code,
   }: ExchangeCodeArgs): Promise<ExchangeCodeResult> =>
@@ -68,14 +72,22 @@ export class SpotifyWebApi {
           redirect_uri: this.config.redirectUri,
         }),
       })
-      .then((res) => res.data)
-      .catch((e) => {
-        if (axios.isAxiosError(e)) {
-          console.log(e.toJSON());
-          console.log(e.response.data);
-        }
-        throw e;
-      });
+      .then((res) => res.data);
+  public refreshToken = ({
+    refreshToken: refresh_token,
+  }: RefreshTokenArgs): Promise<RefreshTokenResult> =>
+    this.accountsApi
+      .request<RefreshTokenResult>({
+        method: 'POST',
+        url: `/api/token`,
+        headers: this.getHeaders(),
+        data: qs.stringify({
+          grant_type: 'refresh_token',
+          refresh_token,
+        }),
+      })
+      .then((res) => res.data);
+
   public getClientInfo = ({
     accessToken,
   }: GetClientInfoArgs): Promise<GetClientInfoResult> =>
@@ -85,12 +97,5 @@ export class SpotifyWebApi {
         url: `/v1/me`,
         headers: this.getHeaders(accessToken),
       })
-      .then((res) => res.data)
-      .catch((e) => {
-        if (axios.isAxiosError(e)) {
-          console.log(e.toJSON());
-          console.log(e.response.data);
-        }
-        throw e;
-      });
+      .then((res) => res.data);
 }

@@ -1,27 +1,18 @@
 import {
-  BadRequestException,
   Controller,
   Get,
   InternalServerErrorException,
+  NotFoundException,
+  Param,
+  Post,
   Query,
-  Redirect,
 } from '@nestjs/common';
-import _ from 'lodash';
+import { AuthorizeResult, isAuthorizeSuccessResult } from '@sp-gram/spotify';
 import { SpotifyService } from './spotify.service';
-import { isAuthorizeSuccessResult, AuthorizeResult } from '@sp-gram/spotify';
 
 @Controller('/spotify')
 export class SpotifyController {
-  accessToken?: string;
   constructor(private spotifyService: SpotifyService) {}
-
-  @Get('/login')
-  @Redirect()
-  onLogin() {
-    const state = `467620958`;
-    const { url } = this.spotifyService.getAuthorizationUrl({ state });
-    return { url };
-  }
 
   @Get('/callback')
   async onCallback(@Query() result: AuthorizeResult) {
@@ -32,12 +23,12 @@ export class SpotifyController {
     return tokens;
   }
 
-  @Get('/me')
-  onMe() {
-    const accessToken = this.accessToken;
-    if (!accessToken) {
-      throw new BadRequestException('No access token was found');
+  @Post('/:tgId/refresh-token')
+  async onRefreshToken(@Param('tgId') tgId: number) {
+    const token = await this.spotifyService.refreshTokens({ tgId });
+    if (!token) {
+      throw new NotFoundException(`User with id ${tgId} not found`);
     }
-    return this.spotifyService.getClientInfo({ accessToken });
+    return token;
   }
 }

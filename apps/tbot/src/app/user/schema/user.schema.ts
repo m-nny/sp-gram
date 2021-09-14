@@ -9,10 +9,10 @@ import {
 @Schema({ collection: 'users' })
 export class UserModel {
   @Prop({ required: true })
-  fullname: string;
+  fullname!: string;
 
   @Prop({ required: true, unique: true })
-  tgId: number;
+  tgId!: number;
 
   @Prop({ unique: true })
   tgUsername?: string;
@@ -21,7 +21,7 @@ export class UserModel {
   auth?: UserAuth | null;
 
   @Prop({ required: true, default: defaultUserPreference })
-  preference: UserPreference;
+  preference!: UserPreference;
 }
 export type UserInfoKey = Pick<UserModel, 'tgId'>;
 

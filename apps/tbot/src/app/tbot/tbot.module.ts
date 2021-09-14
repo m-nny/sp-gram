@@ -8,7 +8,7 @@ import { TBotUpdate } from './tbot.update';
 @Module({
   imports: [
     TelegrafModule.forRoot({
-      token: process.env.TBOT_TOKEN,
+      token: process.env.TBOT_TOKEN || 'nope',
     }),
     UserModule,
     SpotifyModule,

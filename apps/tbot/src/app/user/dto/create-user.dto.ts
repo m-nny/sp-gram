@@ -3,10 +3,10 @@ import { CreateUserInfo } from '../schema/user.schema';
 
 export class CreateUserDto implements CreateUserInfo {
   @IsString()
-  readonly fullname: string;
+  readonly fullname!: string;
 
   @IsNumber()
-  readonly tgId: number;
+  readonly tgId!: number;
 
   @IsOptional()
   @IsString()

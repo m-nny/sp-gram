@@ -3,11 +3,11 @@ import { Prop, Schema } from '@nestjs/mongoose';
 @Schema()
 export class UserAuth {
   @Prop({ required: true })
-  accessToken: string;
+  accessToken!: string;
 
   @Prop({ required: true })
-  refreshToken: string;
+  refreshToken!: string;
 
   @Prop({ required: true })
-  expiresIn: Date;
+  expiresIn!: Date;
 }

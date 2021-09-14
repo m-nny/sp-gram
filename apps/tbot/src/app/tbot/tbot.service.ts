@@ -2,7 +2,9 @@ import { Injectable } from '@nestjs/common';
 import { SpotifyService } from '../spotify/spotify.service';
 import { CreateUserInfo } from '../user/schema/user.schema';
 import { UserService } from '../user/user.service';
-import { TgContext } from './context.interface';
+import { TgContext, TgUser } from './context.interface';
+
+//type NotNull<T> = T extends null
 
 @Injectable()
 export class TbotService {
@@ -11,8 +13,9 @@ export class TbotService {
     private spotifyService: SpotifyService
   ) {}
   async getUserInfo(ctx: TgContext) {
-    const dbUser = await this.userService.findByTId({ tgId: ctx.from.id });
-    const accessToken = dbUser?.auth.accessToken;
+    const tgId = ctx.from.id;
+    const dbUser = await this.userService.findByTId({ tgId });
+    const accessToken = dbUser?.auth?.accessToken;
     let spotifyUser = undefined;
     if (accessToken) {
       spotifyUser = await this.spotifyService.getClientInfo({
@@ -24,18 +27,18 @@ export class TbotService {
 
   async registerUser(ctx: TgContext) {
     const user = await this.userService.createOrUpdate(
-      this.hydrateUserInfo(ctx)
+      this.hydrateUserInfo(ctx.from)
     );
     return user;
   }
 
-  private hydrateUserInfo(ctx: TgContext): CreateUserInfo {
-    const tgId = ctx.from.id;
-    let fullname = ctx.from.first_name;
-    if (ctx.from.last_name) {
-      fullname += ' ' + ctx.from.last_name;
+  private hydrateUserInfo(from: TgUser): CreateUserInfo {
+    const tgId = from.id;
+    let fullname = from.first_name;
+    if (from.last_name) {
+      fullname += ' ' + from.last_name;
     }
-    const tgUsername = ctx.from.username;
+    const tgUsername = from.username;
     return { tgId, fullname, tgUsername };
   }
 
