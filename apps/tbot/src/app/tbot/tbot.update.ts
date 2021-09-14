@@ -3,7 +3,6 @@ import { Command, Start, Update } from 'nestjs-telegraf';
 import { TgContext } from './context.interface';
 import { TelegrafExceptionFilter } from './filters/telegraf-exception.filter';
 import { TbotService } from './tbot.service';
-import escape from 'markdown-escape';
 
 @Update()
 @UseFilters(TelegrafExceptionFilter)
@@ -37,6 +36,12 @@ export class TBotUpdate {
   async onRegister(ctx: TgContext) {
     const user = await this.tbotService.registerUser(ctx);
     return `Created user in db:\n${JSON.stringify(user, null, 4)}`;
+  }
+
+  @Command('/link_spotify')
+  async onAuthenticateSpotify(ctx: TgContext) {
+    const { url } = await this.tbotService.authenticateUser(ctx);
+    return `Please got to ${url} and link your spotify account`;
   }
 
   private replyWithJson = (ctx: TgContext, txt: string, obj: any) => {

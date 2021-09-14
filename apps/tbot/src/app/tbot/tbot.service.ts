@@ -43,6 +43,6 @@ export class TbotService {
     const user = await this.registerUser(ctx);
     const state = `${user.tgId}`;
     const url = this.spotifyService.getAuthorizationUrl({ state });
-    return { url };
+    return url;
   }
 }
