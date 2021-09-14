@@ -27,6 +27,9 @@
     ]
   },
   "projects": {
+    "spotify": {
+      "tags": []
+    },
     "tbot": {
       "tags": []
     }

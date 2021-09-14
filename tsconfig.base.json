@@ -15,7 +15,9 @@
     "skipDefaultLibCheck": true,
     "baseUrl": ".",
     "esModuleInterop": true,
-    "paths": {}
+    "paths": {
+      "@sp-gram/spotify": ["libs/spotify/src/index.ts"]
+    }
   },
   "exclude": ["node_modules", "tmp"]
 }

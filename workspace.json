@@ -1,6 +1,28 @@
 {
   "version": 2,
   "projects": {
+    "spotify": {
+      "root": "libs/spotify",
+      "sourceRoot": "libs/spotify/src",
+      "projectType": "library",
+      "targets": {
+        "lint": {
+          "executor": "@nrwl/linter:eslint",
+          "outputs": ["{options.outputFile}"],
+          "options": {
+            "lintFilePatterns": ["libs/spotify/**/*.ts"]
+          }
+        },
+        "test": {
+          "executor": "@nrwl/jest:jest",
+          "outputs": ["coverage/libs/spotify"],
+          "options": {
+            "jestConfig": "libs/spotify/jest.config.js",
+            "passWithNoTests": true
+          }
+        }
+      }
+    },
     "tbot": {
       "root": "apps/tbot",
       "sourceRoot": "apps/tbot/src",
